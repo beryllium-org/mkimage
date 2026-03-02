@@ -384,7 +384,7 @@ def partition(disk, fs, img_size, partition_table, split=False, has_uefi=False):
     logging.info("Partitioned successfully")
 
 
-def create_fstab(fs, ldev, ldev_alt=None, simple_vfat=False) -> None:
+def create_fstab(fs, ldev, ldev_alt=None, simple_vfat=False, net=False) -> None:
     if cfg["has_uefi"]:
         id1 = get_fsline(ldev + "p2") # EFI
         id2 = get_fsline(ldev + "p3") # ROOT
@@ -397,7 +397,7 @@ def create_fstab(fs, ldev, ldev_alt=None, simple_vfat=False) -> None:
 
     if fs == "ext4":
         with open(mnt_dir + "/etc/fstab", "a") as f:
-            f.write(id1 + " / ext4 defaults 0 0\n")
+            f.write(id1 + " / ext4 defaults" + (",_netdev" if net else "") + " 0 0\n")
     else:
         with open(mnt_dir + "/etc/fstab", "a") as f:
             f.write(
@@ -405,34 +405,48 @@ def create_fstab(fs, ldev, ldev_alt=None, simple_vfat=False) -> None:
                 + " /"
                 + 21 * " "
                 + "btrfs rw,relatime,ssd"
-                + ",compress=zstd,space_cache=v2,subvol=/@ 0 0\n"
+                + ",compress=zstd,space_cache=v2,subvol=/@"
+                + (",_netdev" if net else "")
+                + " 0 0\n"
             )
             f.write(
                 id2
                 + " /.snapshots"
                 + 11 * " "
                 + "btrfs rw,relatime,ssd,discard=async,compress=zstd,"
-                + "space_cache=v2,subvol=/@.snapshots 0 0\n"
+                + "space_cache=v2,subvol=/@.snapshots"
+                + (",_netdev" if net else "")
+                + " 0 0\n"
             )
             f.write(
                 id2
                 + " /home"
                 + 17 * " "
                 + "btrfs rw,relatime,ssd,discard=async,compress=zstd,"
-                + "space_cache=v2,subvol=/@home 0 0\n"
+                + "space_cache=v2,subvol=/@home"
+                + (",_netdev" if net else "")
+                + " 0 0\n"
             )
             f.write(
                 id2
                 + " /var/cache/pacman/pkg btrfs rw,relatime,ssd,discard=async,"
-                + "space_cache=v2,subvol=/@pkg 0 0\n"
+                + "space_cache=v2,subvol=/@pkg"
+                + (",_netdev" if net else "")
+                + " 0 0\n"
             )
             f.write(
                 id2
                 + " /var/log"
                 + 14 * " "
                 + "btrfs rw,relatime,ssd,discard=async,compress=zstd,"
-                + "space_cache=v2,subvol=/@log 0 0\n"
+                + "space_cache=v2,subvol=/@log"
+                + (",_netdev" if net else "")
+                + " 0 0\n"
             )
+
+    if net:
+        return
+
     with open(mnt_dir + "/etc/fstab", "a") as f:
         if cfg["has_uefi"]:
             boot_fs = get_parttype(ldev + "p2")
