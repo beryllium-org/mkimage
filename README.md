@@ -1,4 +1,4 @@
-# BredOS Image builder
+# Beryllium OS Image builder
 
 This project is a Python script that automates the process of creating images for various Arm SBCs (Single Board Computers) using a board configuration file. The script currently supports the following SBCs:
 
@@ -16,16 +16,16 @@ To use this project, you will need:
 
 - Python 3.6 or later installed on your system
 - Git installed on your system
-- Arch install scripts 
+- Arch install scripts
 - These python libraries `argparse`, `prettytable`, `signal`
-    
+
 
 # Installation
 
 To use this project, clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/BredOS/mkimage
+git clone https://github.com/beryllium-org/mkimage
 ```
 # Usage
 
@@ -39,7 +39,7 @@ Where:
 - `-w`: the working directory to use
 - `-o`: the output directory for the resulting image
 - `-c`: the board configuration file to use
-    
+
 ## **WARNING:** If your system has less than 16 GB of RAM, it is recommended to use a different directory for the working directory, as using `/tmp/work` can cause performance issues due to the limited space in the `/tmp` directory.
 
 For example, to create an image for the Rock 5 board, using the lxqt-rock5b-image configuration, with a working directory of /tmp/work and an output directory of ./output, you would run:
