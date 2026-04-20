@@ -259,7 +259,7 @@ def makeimg(size, fs, img_name, backend):
     if args.ci:
         subprocess.run(["ln", "-s", ldev, ldev.replace("/dev/", "/dev/mapper/")])
         ldev = ldev.replace("/dev/", "/dev/mapper/")
-    
+
     return img_size, ldev
 
 
@@ -389,7 +389,7 @@ def create_fstab(fs, ldev, ldev_alt=None, simple_vfat=False, net=False) -> None:
         id1 = get_fsline(ldev + "p2") # EFI
         id2 = get_fsline(ldev + "p3") # ROOT
     elif cfg["uboot_parts"]:
-        id1 = get_fsline(ldev + "p" + str(1 + cfg["uboot_parts"])) 
+        id1 = get_fsline(ldev + "p" + str(1 + cfg["uboot_parts"]))
         id2 = get_fsline(ldev + "p" + str(2 + cfg["uboot_parts"])) # ROOT
     else:
         id1 = get_fsline(ldev + "p1")
@@ -515,7 +515,7 @@ def copy_skel_to_users() -> None:
         )
 
     with open(cfg["install_dir"] + "/version", "w") as f:
-        f.write("BredOS " + cfg["img_version"] + "\n")
+        f.write("Beryllium OS " + cfg["img_version"] + "\n")
 
 
 def u_boot_update(mnt_dir: str, configtxt: str) -> None:
@@ -560,7 +560,7 @@ def grub_install(mnt_dir: str, arch: str ="arm64-efi") -> None:
     grubfile = open(mnt_dir + "/etc/default/grub", "w")
     grubfile.write(grubconf)
     grubfile.close()
-    run_chroot_cmd(mnt_dir, ["grub-install", f"--target={arch}", "--efi-directory=/boot/efi", "--removable", "--bootloader-id=BredOS"])
+    run_chroot_cmd(mnt_dir, ["grub-install", f"--target={arch}", "--efi-directory=/boot/efi", "--removable", "--bootloader-id=Beryllium"])
     if not os.path.exists(mnt_dir + "/boot/grub"):
         os.mkdir(mnt_dir + "/boot/grub")
     run_chroot_cmd(mnt_dir, ["grub-mkconfig", "-o", "/boot/grub/grub.cfg"])
