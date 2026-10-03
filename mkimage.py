@@ -592,8 +592,7 @@ def compressimage(img_name: str) -> None:
     subprocess.run(
         [
             "xz",
-            "-k",
-            "-5" if not args.fast_forward else "-1",
+            "-9e" if not args.fast_forward else "-1",
             "-T0",
             "--verbose",
             "-f",
